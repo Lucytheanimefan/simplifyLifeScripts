@@ -14,7 +14,13 @@ def createNewProj():
 	print "Making template"
 	subprocess.call(["mkdir",appRoot+"/templates/"+project])
 	subprocess.call(["touch",appRoot+"/templates/"+project+"/index.html"])
-	print "Done"
+	print "Make img folder? (y/n)"
+	userInput = sys.stdin.readline().strip()
+	if (userInput == 'y'):
+		subprocess.call(["mkdir",appRoot+"/static/img/"+project])
+	else:
+		print "done"
+	print "done"
 
 if __name__ == '__main__':
 	createNewProj()
