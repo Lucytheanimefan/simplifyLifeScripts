@@ -1,3 +1,5 @@
+import subprocess
+import sys
 
 appRoot = "/Users/lucyzhang/Github/deadfisheyed"
 def createNewProj():
