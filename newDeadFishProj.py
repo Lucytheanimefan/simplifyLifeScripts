@@ -1,5 +1,5 @@
 
-appRoot = "/Users/lucyzhang/Github/deadfisheyed/"
+appRoot = "/Users/lucyzhang/Github/deadfisheyed"
 def createNewProj():
 	print "Name of project:"
 	project = sys.stdin.readline().strip()
