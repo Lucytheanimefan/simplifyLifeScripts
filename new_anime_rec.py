@@ -2,15 +2,17 @@ import subprocess
 import sys
 from bs4 import BeautifulSoup
 import requests
+from textblob import TextBlob
+import operator
 
 aniChartUrl="https://www.livechart.me/"
 great_studios = ["MAPPA","A-1 Pictures","Bones","Madhouse"]
 good_studios = ["ufotable","Production I.G","Brains Base", "Shaft"]
 ok_studios = ["Lerche"]
 
-bad_tags = ["School", "Harem"]
+bad_tags = ["School", "Harem","Ecchi", "Kids"]
 sort_of_bad_tags = ["Slice of Life"]
-good_tags = ["Psychological","Seinen","Horror","Mystery"]
+good_tags = ["Psychological","Seinen","Horror","Mystery","Thriller"]
 
 
 def findSeasonRecs():
@@ -30,13 +32,14 @@ def findSeasonRecs():
 	for anime in animez:
 		titlez = anime.find_all("h3",{"class":"main-title"})[0]
 		title = titlez.text
+		#print title
 		scores[title] = 0 #each show starts off with 0
 
-		#check title
+		########## check title ###########
 		if "death" in title:
 			scores[title]+=2
 
-		#check the tag
+		########### check the tag ##########
 		tags = [tag.text for tag in anime.find_all("ol",{"class":"anime-tags"})[0].find_all("li")]
 		for tag in tags:
 			if tag in good_tags:
@@ -44,11 +47,11 @@ def findSeasonRecs():
 			elif tag in sort_of_bad_tags:
 				scores[title] -= 1
 			elif tag in bad_tags:
-				scores[title] -= 6
+				scores[title] -= 10
 		season_anime[title] = {"tags":tags}
 		studios = anime.find_all("ul",{"class":"anime-studios"})
 
-		#check the studios
+		############ check the studios #############
 		parsed_studios = []
 		for studio in studios:
 			if studio.find_all("a"):
@@ -64,9 +67,20 @@ def findSeasonRecs():
 				parsed_studios.append(studio.find_all("li")[0].text)
 		season_anime[title]["studios"]=parsed_studios
 
-		#check description
-		descriptionz = anime.find_all
-	print season_anime
+		############### check description ###################
+		description = anime.find_all("div",{"class":"anime-synopsis"})[0].find("p").text
+		season_anime["description"] = description
+		blob = TextBlob(description)
+		for sentence in blob.sentences:
+			#print(sentence.sentiment.polarity)
+			scores[title]+=(-5*sentence.sentiment.polarity)
+	#print season_anime
+	sorted_anime = sorted(scores.items(), key=operator.itemgetter(1))
+	i=0
+	for anime in reversed(sorted_anime):
+		i+=1
+		print str(i) +": " + anime[0]+", "+str(anime[1])
+	return sorted_anime
 
 
 
