@@ -11,8 +11,8 @@ good_studios = ["ufotable","Production I.G","Brains Base", "Shaft"]
 ok_studios = ["Lerche"]
 
 bad_tags = ["School", "Harem","Ecchi", "Kids"]
-sort_of_bad_tags = ["Slice of Life"]
-good_tags = ["Psychological","Seinen","Horror","Mystery","Thriller"]
+sort_of_bad_tags = ["Slice of Life", "Comedy","Historical"]
+good_tags = ["Psychological","Seinen","Horror","Mystery","Thriller","Supernatural"]
 
 
 def findSeasonRecs():
@@ -45,9 +45,9 @@ def findSeasonRecs():
 			if tag in good_tags:
 				scores[title] += 6
 			elif tag in sort_of_bad_tags:
-				scores[title] -= 1
+				scores[title] = scores[title] - 3
 			elif tag in bad_tags:
-				scores[title] -= 10
+				scores[title] = scores[title] - 10
 		season_anime[title] = {"tags":tags}
 		studios = anime.find_all("ul",{"class":"anime-studios"})
 
@@ -68,18 +68,22 @@ def findSeasonRecs():
 		season_anime[title]["studios"]=parsed_studios
 
 		############### check description ###################
+	
 		description = anime.find_all("div",{"class":"anime-synopsis"})[0].find("p").text
 		season_anime["description"] = description
 		blob = TextBlob(description)
 		for sentence in blob.sentences:
 			#print(sentence.sentiment.polarity)
 			scores[title]+=(-5*sentence.sentiment.polarity)
+	
 	#print season_anime
 	sorted_anime = sorted(scores.items(), key=operator.itemgetter(1))
 	i=0
 	for anime in reversed(sorted_anime):
 		i+=1
 		print str(i) +": " + anime[0]+", "+str(anime[1])
+	print("-------------")
+	#print(season_anime)
 	return sorted_anime
 
 
