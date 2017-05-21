@@ -1,3 +1,11 @@
+'''
+How to use:
+1. Download 
+2. Run: pip install -r anime_req.txt
+3. Run: python -m textblob.download_corpora
+4. Run: python new_anime_rec.py
+'''
+
 import subprocess
 import sys
 from bs4 import BeautifulSoup
