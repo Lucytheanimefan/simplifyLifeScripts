@@ -17,11 +17,12 @@ import operator
 
 aniChartUrl="https://www.livechart.me/"
 great_studios = ["MAPPA","A-1 Pictures","Bones","Madhouse"]
-good_studios = ["ufotable","Production I.G","Brains Base", "Shaft"]
+good_studios = ["ufotable","Production I.G","Brains Base", "Shaft","Wit Studio"]
 ok_studios = ["Lerche"]
 
 bad_tags = ["School", "Harem","Ecchi", "Kids"]
 sort_of_bad_tags = ["Slice of Life", "Comedy","Historical"]
+ok_tags = ["Action","Drama","Fantasy","Shounen"] 
 good_tags = ["Psychological","Seinen","Horror","Mystery","Thriller","Supernatural"]
 
 
@@ -58,6 +59,8 @@ def findSeasonRecs():
 				scores[title] += -3
 			elif tag in bad_tags:
 				scores[title] += -10
+			elif tag in ok_tags:
+				scores[title]+=2
 		season_anime[title] = {"tags":tags}
 		studios = anime.find_all("ul",{"class":"anime-studios"})
 
