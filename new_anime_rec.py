@@ -1,5 +1,5 @@
 '''
-WHAT SHOULD YOU WATCH NEXT SEASON?
+WHAT SHOULD YOU WATCH NEXT SEASON? (More like, what would Lucy watch next season?)
 Warning: not accurate
 How to use:
 1. Download 
@@ -83,6 +83,8 @@ def findSeasonRecs():
 		############### check description ###################
 	
 		description = anime.find_all("div",{"class":"anime-synopsis"})[0].find("p").text
+		if "death" in description:
+			scores[title]+=2
 		season_anime["description"] = description
 		blob = TextBlob(description)
 		for sentence in blob.sentences:
