@@ -55,9 +55,9 @@ def findSeasonRecs():
 			if tag in good_tags:
 				scores[title] += 6
 			elif tag in sort_of_bad_tags:
-				scores[title] = scores[title] - 3
+				scores[title] += -3
 			elif tag in bad_tags:
-				scores[title] = scores[title] - 10
+				scores[title] += -10
 		season_anime[title] = {"tags":tags}
 		studios = anime.find_all("ul",{"class":"anime-studios"})
 
