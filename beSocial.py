@@ -77,9 +77,6 @@ if __name__ == '__main__':
 			for tag in tags:
 				if "note" in person and tag.lower() in person["note"].lower():
 					if "phone" in person:
-						print(person["first"])
-						print(person["phone"])
-						print("------")
 						run(message,person["phone"][0])
 					#elif "email" in person:
 					#	run(message,person["email"][0])
@@ -87,9 +84,6 @@ if __name__ == '__main__':
 			for name in names: #by name
 				if "first" in person and name.lower()==person["first"].lower():
 					if "phone" in person:
-						print(person["first"])
-						print(person["phone"])
-						print("------")
 						run(message,person["phone"][0])
 					#elif "email" in person:
 					#	run(message,person["email"][0])
