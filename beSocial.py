@@ -59,36 +59,39 @@ def run(message, toPerson, fromPerson="spothorse9.lucy@gmail.com"):
 	'end tell').run()
 
 if __name__ == '__main__':
-	print "Who do you want to bother (names separated by commas)/or the preprogrammed tag if you're a boss?"
-	names = sys.stdin.readline().strip().split(",")
+	print "Message by notes? (y/n)"
+	answer = sys.stdin.readline().strip()
+	if answer=="y":
+		print "What preprogrammed tag?"
+		tags = sys.stdin.readline().strip().split(",")
+		names = None
+	else:
+		print "Who do you want to bother (names separated by commas)/or the preprogrammed tag if you're a boss?"
+		names = sys.stdin.readline().strip().split(",")
+		tags = None
 	print "Message?"
 	message = sys.stdin.readline()
-	print names
 	people = address_book_to_list()
 	for person in people:
-		if names[0]=="anime":
-			print "ANIME"
-			if "note" in person and names[0] in person["note"]:
-				print "-------"
-				print person
-				print "-------"
-				if "phone" in person:
-					print(person["first"])
-					print(person["phone"])
-					print("------")
-					run(message,person["phone"][0])
-				elif "email" in person:
-					run(message,person["email"][0])
-		else:
-			for name in names:
-				if "first" in person and name.lower()==person["first"].lower():
-					print "-------"
-					print person
-					print "-------"
+		if answer=="y": #tag
+			for tag in tags:
+				if "note" in person and tag.lower() in person["note"].lower():
 					if "phone" in person:
 						print(person["first"])
 						print(person["phone"])
 						print("------")
 						run(message,person["phone"][0])
+					#elif "email" in person:
+					#	run(message,person["email"][0])
+		else:
+			for name in names: #by name
+				if "first" in person and name.lower()==person["first"].lower():
+					if "phone" in person:
+						print(person["first"])
+						print(person["phone"])
+						print("------")
+						run(message,person["phone"][0])
+					#elif "email" in person:
+					#	run(message,person["email"][0])
 
 
