@@ -39,15 +39,6 @@ def ab_person_to_dict(person, skip=None):
     return all_props
 
 def address_book_to_list():
-    """
-    Read the current user's AddressBook database, converting each person
-    in the address book into a Dictionary of values. Some values (addresses,
-    phone numbers, email, etc) can have multiple values, in which case a
-    list of all of those values is stored. The result of this method is
-    a List of Dictionaries, with each person represented by a single record
-    in the list.
-    Function adapted from: https://gist.github.com/pklaus/1029870
-    """
     address_book = ab.ABAddressBook.sharedAddressBook()
     people = address_book.people()
     #print(people)
@@ -69,5 +60,4 @@ def run(message, toPerson, fromPerson="spothorse9.lucy@gmail.com"):
 if __name__ == '__main__':
 	#address_book_to_list()
 	pp.pprint(address_book_to_list())
-	#run("hi","9082405834")
 	#get_relevant_contacts()
