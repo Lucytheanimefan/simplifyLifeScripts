@@ -1,13 +1,22 @@
 import subprocess
 import applescript
-import Contacts
 import AddressBook as ab
-from Foundation import NSBundle
 import objc
 import pprint as pp
+import requests, json
+import ast
 
 _default_skip_properties = frozenset(("com.apple.ABPersonMeProperty",
                                       "com.apple.ABImageData"))
+
+
+def get_gender(name):
+	r = requests.get("https://api.genderize.io/?name="+name)
+	#print r.content
+	#print json.loads(r.content)["gender"]
+	return json.loads(r.content)["gender"]
+
+
 
 def pythonize(objc_obj):
     if isinstance(objc_obj, objc.pyobjc_unicode):
@@ -25,8 +34,9 @@ def pythonize(objc_obj):
 def ab_person_to_dict(person, skip=None):
     skip = _default_skip_properties if skip is None else frozenset(skip)
     props = person.allProperties()
-    return {prop.lower(): pythonize(person.valueForProperty_(prop))
+    all_props = {prop.lower(): pythonize(person.valueForProperty_(prop))
             for prop in props if prop not in skip}
+    return all_props
 
 def address_book_to_list():
     """
@@ -40,7 +50,15 @@ def address_book_to_list():
     """
     address_book = ab.ABAddressBook.sharedAddressBook()
     people = address_book.people()
-    return [ab_person_to_dict(person) for person in people]
+    #print(people)
+    all_people = [ab_person_to_dict(person) for person in people]
+    '''
+    for person in all_people:
+    	print person
+    	print "------"
+   	'''
+    #relevant_info = [{"email":person["email"],"first":person["first"],"gender":get_gender(person["first"])} for person in all_people if "email" in person and "first" in person]
+    return all_people#relevant_info
 
 
 def run(message, toPerson, fromPerson="spothorse9.lucy@gmail.com"):
@@ -49,6 +67,7 @@ def run(message, toPerson, fromPerson="spothorse9.lucy@gmail.com"):
 	'end tell').run()
 
 if __name__ == '__main__':
+	#address_book_to_list()
 	pp.pprint(address_book_to_list())
 	#run("hi","9082405834")
 	#get_relevant_contacts()
