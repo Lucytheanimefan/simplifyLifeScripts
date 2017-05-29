@@ -5,6 +5,7 @@ import objc
 import pprint as pp
 import requests, json
 import ast
+import sys
 
 _default_skip_properties = frozenset(("com.apple.ABPersonMeProperty",
                                       "com.apple.ABImageData"))
@@ -58,6 +59,36 @@ def run(message, toPerson, fromPerson="spothorse9.lucy@gmail.com"):
 	'end tell').run()
 
 if __name__ == '__main__':
-	#address_book_to_list()
-	pp.pprint(address_book_to_list())
-	#get_relevant_contacts()
+	print "Who do you want to bother (names separated by commas)/or the preprogrammed tag if you're a boss?"
+	names = sys.stdin.readline().strip().split(",")
+	print "Message?"
+	message = sys.stdin.readline()
+	print names
+	people = address_book_to_list()
+	for person in people:
+		if names[0]=="anime":
+			print "ANIME"
+			if "note" in person and names[0] in person["note"]:
+				print "-------"
+				print person
+				print "-------"
+				if "phone" in person:
+					print(person["first"])
+					print(person["phone"])
+					print("------")
+					run(message,person["phone"][0])
+				elif "email" in person:
+					run(message,person["email"][0])
+		else:
+			for name in names:
+				if "first" in person and name.lower()==person["first"].lower():
+					print "-------"
+					print person
+					print "-------"
+					if "phone" in person:
+						print(person["first"])
+						print(person["phone"])
+						print("------")
+						run(message,person["phone"][0])
+
+
