@@ -59,10 +59,11 @@ def run(message, toPerson, fromPerson="spothorse9.lucy@gmail.com"):
 	'end tell').run()
 
 if __name__ == '__main__':
+	sent_to = []
 	print "Message by notes? (y/n)"
 	answer = sys.stdin.readline().strip()
 	if answer=="y":
-		print "What preprogrammed tag?"
+		print "What preprogrammed tag? (anime, family, deadfisheyed, cool)"
 		tags = sys.stdin.readline().strip().split(",")
 		names = None
 	else:
@@ -75,16 +76,18 @@ if __name__ == '__main__':
 	for person in people:
 		if answer=="y": #tag
 			for tag in tags:
-				if "note" in person and tag.lower() in person["note"].lower():
+				if "note" in person and tag.lower() in person["note"].lower() and person["phone"][0] not in sent_to:
 					if "phone" in person:
 						run(message,person["phone"][0])
+						sent_to.append(person["phone"][0])
 					#elif "email" in person:
 					#	run(message,person["email"][0])
 		else:
 			for name in names: #by name
-				if "first" in person and name.lower()==person["first"].lower():
+				if "first" in person and name.lower()==person["first"].lower() and person["phone"][0] not in sent_to:
 					if "phone" in person:
 						run(message,person["phone"][0])
+						sent_to.append(person["phone"][0])
 					#elif "email" in person:
 					#	run(message,person["email"][0])
 
