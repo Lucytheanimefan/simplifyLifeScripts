@@ -67,11 +67,11 @@ if __name__ == '__main__':
 		tags = sys.stdin.readline().strip().split(",")
 		names = None
 	else:
-		print "Who do you want to bother (names separated by commas)/or the preprogrammed tag if you're a boss?"
+		print "Who do you want to bother (names separated by commas)?"
 		names = sys.stdin.readline().strip().split(",")
 		tags = None
 	print "Message?"
-	message = sys.stdin.readline()
+	message = sys.stdin.readline() + "\n(Sent from Lucy's awesome script)"
 	people = address_book_to_list()
 	for person in people:
 		if answer=="y": #tag
