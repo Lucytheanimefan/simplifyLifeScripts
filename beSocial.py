@@ -76,16 +76,16 @@ if __name__ == '__main__':
 	for person in people:
 		if answer=="y": #tag
 			for tag in tags:
-				if "note" in person and tag.lower() in person["note"].lower() and person["phone"][0] not in sent_to:
-					if "phone" in person:
+				if "phone" in person:
+					if "note" in person and tag.lower() in person["note"].lower() and person["phone"][0] not in sent_to:
 						run(message,person["phone"][0])
 						sent_to.append(person["phone"][0])
 					#elif "email" in person:
 					#	run(message,person["email"][0])
 		else:
 			for name in names: #by name
-				if "first" in person and name.lower()==person["first"].lower() and person["phone"][0] not in sent_to:
-					if "phone" in person:
+				if "phone" in person:
+					if "first" in person and name.lower()==person["first"].lower() and person["phone"][0] not in sent_to:
 						run(message,person["phone"][0])
 						sent_to.append(person["phone"][0])
 					#elif "email" in person:
