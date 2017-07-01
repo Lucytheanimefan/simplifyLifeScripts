@@ -26,7 +26,6 @@ def get_anime_stream_site(anime_object):
 	
 	# check for funimation
 	funi = soup.find_all("a", {"title":"FUNimation Entertainment"})
-	print funi
 	if len(funi) > 0:
 		if anime_title in to_return:
 			to_return[anime_title].append("Funimation")
