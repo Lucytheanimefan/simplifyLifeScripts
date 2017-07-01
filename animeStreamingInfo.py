@@ -18,9 +18,20 @@ def get_anime_stream_site(anime_object):
 	to_return = {}
 	ani_req = requests.get("https://myanimelist.net" + anime_url,verify=False)
 	soup = BeautifulSoup(ani_req.text, "html.parser")
+
+	# check for crunchyroll
 	episodes = str(soup.find_all("ul", {"class":"anime-slide"}))
 	if len(episodes)>0 and "crunchyroll" in episodes:
-		to_return[anime_object["anime_title"]] = "crunchyroll"
+		to_return[anime_title] = ["crunchyroll"]
+	
+	# check for funimation
+	funi = soup.find_all("a", {"title":"FUNimation Entertainment"})
+	print funi
+	if len(funi) > 0:
+		if anime_title in to_return:
+			to_return[anime_title].append("Funimation")
+		else:
+			to_return[anime_title] = "Funimation" 
 	return to_return
 
 
