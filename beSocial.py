@@ -6,6 +6,8 @@ import pprint as pp
 import requests, json
 import ast
 import sys
+import datetime
+from random import randint
 
 _default_skip_properties = frozenset(("com.apple.ABPersonMeProperty",
                                       "com.apple.ABImageData"))
@@ -57,6 +59,20 @@ def run(message, toPerson, fromPerson="spothorse9.lucy@gmail.com"):
 	applescript.AppleScript('tell application "Messages" \n'+
     'send "'+message+'" to buddy "'+toPerson+'" of service "E:'+fromPerson+'"\n'+
 	'end tell').run()
+
+
+def update_family():
+	today = datetime.datetime.today().weekday() #Monday is 0 and Sunday is 6.
+	rand = randint(0,6)
+	if (today==rand):
+		#send a message
+		people = address_book_to_list()
+
+
+
+
+
+
 
 if __name__ == '__main__':
 	sent_to = []
