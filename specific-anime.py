@@ -2,6 +2,10 @@ import subprocess
 import json
 import uuid
 from pymongo import MongoClient
+import sys
+import os
+
+sys.path.append("/usr/local/lib/python2.7/site-packages/pymongo")
 
 anime_title = "Tokyo Ghoul"
 anime_url = "https://youtu.be/eNGhKIcHVQc"
@@ -129,7 +133,7 @@ def insert_anime():
 
 
 def main(template):
-  command = "curl -d '" + json.dumps(template) + "' -H 'Content-Type: application/json' " + test_url
+  command = "curl -d '" + json.dumps(template) + "' -H 'Content-Type: application/json' " + production_url
   p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
   out, err = p.communicate()
 
