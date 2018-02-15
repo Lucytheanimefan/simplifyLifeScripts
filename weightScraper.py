@@ -2,8 +2,26 @@ from bs4 import BeautifulSoup
 import requests
 import re
 import json
+import urllib
 
 anime_urls = ["http://typemoon.wikia.com/wiki/Shiki_Ryougi","http://ouran.wikia.com/wiki/Haruhi_Fujioka", "http://kamisamahajimemashita.wikia.com/wiki/Nanami_Momozono", "http://typemoon.wikia.com/wiki/Saber_(Fate/stay_night)", "http://ancientmagusbride.wikia.com/wiki/Chise_Hatori", "http://attackontitan.wikia.com/wiki/Mikasa_Ackerman","http://sangatsu-no-lion.wikia.com/wiki/Rei_Kiriyama", "http://horimiya.wikia.com/wiki/Hori_Kyouko", "http://horimiya.wikia.com/wiki/Miyamura_Izumi", "http://swordartonline.wikia.com/wiki/Yuuki_Asuna", "http://yahari.wikia.com/wiki/Yukino_Yukinoshita", "http://kaichouwamaidsama.wikia.com/wiki/Misaki_Ayuzawa", "http://tokyoghoul.wikia.com/wiki/Touka_Kirishima", "http://akatsukinoyona.wikia.com/wiki/Yona", "http://guiltycrown.wikia.com/wiki/Inori_Yuzuriha", "http://deathnote.wikia.com/wiki/Misa_Amane", "http://attackontitan.wikia.com/wiki/Historia_Reiss"]
+
+characters = ['Shiki Ryougi', 'Haruhi Fujioka', 'Nanami Momozono', 'Saber', 'Rei Kiriyama', 'Mikasa Ackerman', 'Hori Kyouko', 'Miyamura_Izumi', 'Yuuki Asuna', 'Yukino_Yukinoshita', 'Misaki_Ayuzawa', 'Touka_Kirishima', 'Akatsuki no Yona Yona', 'Inori_Yuzuriha', 'Misa Amane', 'Historia Reiss']
+
+def find_anime_character_url(character_name):
+	url = 'https://www.google.com/search?q=' + urllib.quote(character_name)
+	print url
+	r = requests.get(url)
+	data = r.text
+	soup = BeautifulSoup(data,  "html.parser")
+	results = soup.find_all("a", href=True)
+	#print results
+	for link in results:
+		if 'wikia' in link['href']: #/url?q=
+			return link['href'][7:].split('&', 1)[0]
+			break
+
+
 
 def scrape_weight(url):
 	regex = re.compile(".*?\((.*?)\)")
@@ -43,9 +61,11 @@ def write_to_file(data, filename):
 
 
 if __name__ == '__main__':
-	data = []
-	for url in anime_urls:
-		print url
-		data.append(scrape_weight(url))
-	write_to_file(data, "anime_character_stats")
+	for character in characters:
+		print find_anime_character_url(character)
+	# data = []
+	# for url in anime_urls:
+	# 	print url
+	# 	data.append(scrape_weight(url))
+	# write_to_file(data, "anime_character_stats")
 
