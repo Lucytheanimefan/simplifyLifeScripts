@@ -1,4 +1,3 @@
-from bs4 import BeautifulSoup
 import requests
 
 POST_URL = 'http://anonymouse.org/cgi-bin/anon-email.cgi'
