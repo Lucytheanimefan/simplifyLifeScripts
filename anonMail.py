@@ -18,7 +18,7 @@ def send(subject, message, receiver):
 def go_crazy(subject, message, receiver, num=100): 
 	if isinstance(subject, str) and isinstance(message, str) and isinstance(receiver, str):
 		for i in range(num):
-			send(subject, pad_zero_width(message, i), receiver)
+			send(subject + ' ' + str(i), pad_zero_width(message, i), receiver)
 	elif isinstance(subject, list) and isinstance(message, list): 
 		for i in range(num):
 			if i < len(subject):
@@ -28,4 +28,4 @@ def go_crazy(subject, message, receiver, num=100):
 		print('Can\'t go crazy')
 
 if __name__ == '__main__':
-	go_crazy('Pad test', 'try again', '<EMAIL HERE>', 5)
+	go_crazy('Pad test weekend2', 'try again weekend2', 'lz107@duke.edu', 7)
