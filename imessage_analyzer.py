@@ -4,7 +4,7 @@ import sys
 import nltk
 
 # contact_info: phone number (ie. +19999999999) or apple id
-def retrieve_texts(contact_info):
+def retrieve_process_texts(contact_info):
     con = sqlite3.connect("/Users/lucyzhang/Library/Messages/chat.db")
     results = con.execute("select is_from_me,text from message where handle_id=("+
         "select handle_id from chat_handle_join where chat_id=("+
@@ -18,9 +18,9 @@ def retrieve_texts(contact_info):
         if sender_index is 0:
             # do something with your own texts
             continue
-        else:# do something with other person's texts
+        else: # do something with other person's texts
             continue
 
 
 if __name__ == '__main__':
-    retrieve_texts(sys.argv[1])
+    retrieve_process_texts(sys.argv[1])
