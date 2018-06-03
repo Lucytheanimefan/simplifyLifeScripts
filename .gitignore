@@ -3,3 +3,4 @@ anime_character_stats.txt
 specific_anime.py
 imessage_analyzer.py
 config.py
+__pycache__/*
