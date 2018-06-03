@@ -4,10 +4,9 @@ import webbrowser
 import sys
 import requests
 
-def get_publications(userid):
-	r = requests.get("https://api.medium.com/v1/users/" + userid + "/publications")
-	data = r.data
-	print(data)
+def get_publications(userid, token):
+
+	r = requests.get("https://api.medium.com/v1/users/" + userid + "/publications?access_token=" + token)
 	json = r.json()
 	print(json)
 
@@ -18,7 +17,7 @@ client = Client(application_id=MEDIUM_CLIENT_ID, application_secret=MEDIUM_CLIEN
 
 # Build the URL where you can send the user to obtain an authorization code.
 auth_url = client.get_authorization_url("secretstate", callback_url,
-                                        ["basicProfile", "publishPost"])
+                                        ["basicProfile", "publishPost", "listPublications"])
 
 # (Send the user to the authorization URL to obtain an authorization code.)
 print(auth_url)
@@ -42,7 +41,11 @@ user = client.get_current_user()
 
 print(user)
 
-get_publications(user["id"])
+print(user["id"])
+
+# Get publications
+publications = client._request("GET", "/v1/users/" + user["id"] + "/publications")
+print(publications)
 
 # # Create a draft post.
 # post = client.create_post(user_id=user["id"], title="Title", content="<h2>Title</h2><p>Content</p>",
