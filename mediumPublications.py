@@ -4,7 +4,6 @@ import webbrowser
 import sys
 import json
 import requests
-from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 import requests
 from requests.adapters import HTTPAdapter
@@ -29,22 +28,6 @@ def remove_prefix(text, prefix):
 
 def fix_medium_json_response(data):
     return remove_prefix(data, "])}while(1);</x>")
-
-def medium_featured_articles(soup):
-    articles = []
-    # Medium featured articles
-    posts = soup.find_all("div",{"class": "extremeHero-postContent"})
-    for post in posts:
-        title = post.find("div", {"class":"extremeHero-titleClamp"})
-        byline = post.find("div", {"class":"extremeHero-byline"})
-        print(title.text, byline.text)
-        articles.append((title.text, byline.text))
-    return articles
-
-# def medium_custom_recommended_articles(soup):
-#   links = soup.find_all("a", {"class":"ds-link"})
-#   for link in links:
-#       print(link.text)
 
 # Get articles from home page
 def get_home_articles():
