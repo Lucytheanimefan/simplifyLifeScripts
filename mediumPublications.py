@@ -2,82 +2,92 @@ from medium import Client
 from config import *
 import webbrowser
 import sys
+import json
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 callback_url = "https://lucys-anime-server.herokuapp.com"
 
 ua = UserAgent()
 
+PRIVATE_API_URL = "https://medium.com/_/api"
+
+def remove_prefix(text, prefix):
+    if text.startswith(prefix):
+        return text[len(prefix):]
+    return text  # or whatever
+
 def medium_featured_articles(soup):
-	articles = []
-	# Medium featured articles
-	posts = soup.find_all("div",{"class": "extremeHero-postContent"})
-	for post in posts:
-		title = post.find("div", {"class":"extremeHero-titleClamp"})
-		byline = post.find("div", {"class":"extremeHero-byline"})
-		print(title.text, byline.text)
-		articles.append((title.text, byline.text))
-	return articles
+    articles = []
+    # Medium featured articles
+    posts = soup.find_all("div",{"class": "extremeHero-postContent"})
+    for post in posts:
+        title = post.find("div", {"class":"extremeHero-titleClamp"})
+        byline = post.find("div", {"class":"extremeHero-byline"})
+        print(title.text, byline.text)
+        articles.append((title.text, byline.text))
+    return articles
 
 # def medium_custom_recommended_articles(soup):
-# 	links = soup.find_all("a", {"class":"ds-link"})
-# 	for link in links:
-# 		print(link.text)
+#   links = soup.find_all("a", {"class":"ds-link"})
+#   for link in links:
+#       print(link.text)
 
 # Get articles from home page
 def get_home_articles():
-	header = {'User-Agent':str(ua.chrome)}
-	r = requests.get("https://medium.com", headers = header)
-	data = r.text
-	soup = BeautifulSoup(data,  "html.parser")
+    header = {'User-Agent':str(ua.random)}
 
-	# Medium featured articles
-	featured = medium_featured_articles(soup)
-
-	# Medium's custom recommended articles to you
-	# custom = medium_custom_recommended_articles(soup)
+    try:
+        r = requests.get(PRIVATE_API_URL + "/home-feed", headers = header)
+        data = json.loads(remove_prefix(r.text, "])}while(1);</x>"))
+        print(data)
+    except requests.exceptions.ConnectionError:
+        print("Connection refused")
+    
+    
 
 
 if __name__ == '__main__':
-	do_auth = True
+    do_auth = False
 
-	get_home_articles()
+    get_home_articles()
 
-	if do_auth:
+    if do_auth:
 
-		# Go to http://medium.com/me/applications to get your application_id and application_secret.
-		client = Client(application_id=MEDIUM_CLIENT_ID, application_secret=MEDIUM_CLIENT_SECRET)
+        # Go to http://medium.com/me/applications to get your application_id and application_secret.
+        client = Client(application_id=MEDIUM_CLIENT_ID, application_secret=MEDIUM_CLIENT_SECRET)
 
-		# Build the URL where you can send the user to obtain an authorization code.
-		auth_url = client.get_authorization_url("secretstate", callback_url,
-		                                        ["basicProfile", "publishPost", "listPublications"])
+        # Build the URL where you can send the user to obtain an authorization code.
+        auth_url = client.get_authorization_url("secretstate", callback_url,
+                                                ["basicProfile", "publishPost", "listPublications"])
 
-		# (Send the user to the authorization URL to obtain an authorization code.)
-		print(auth_url)
+        # (Send the user to the authorization URL to obtain an authorization code.)
+        print(auth_url)
 
-		webbrowser.open(auth_url, new=2)
+        webbrowser.open(auth_url, new=2)
 
-		print("Authorization code (at the end of the url that was just opened):")
-		authorization_code = sys.stdin.readline().strip()
+        print("Authorization code (at the end of the url that was just opened):")
+        authorization_code = sys.stdin.readline().strip()
 
-		# Exchange the authorization code for an access token.
-		auth = client.exchange_authorization_code(authorization_code,
-		                                          callback_url)
+        # Exchange the authorization code for an access token.
+        auth = client.exchange_authorization_code(authorization_code,
+                                                  callback_url)
 
-		# The access token is automatically set on the client for you after
-		# a successful exchange, but if you already have a token, you can set it
-		# directly.
-		client.access_token = auth["access_token"]
+        # The access token is automatically set on the client for you after
+        # a successful exchange, but if you already have a token, you can set it
+        # directly.
+        client.access_token = auth["access_token"]
 
-		# Get profile details of the user identified by the access token.
-		user = client.get_current_user()
+        # Get profile details of the user identified by the access token.
+        user = client.get_current_user()
 
-		# Get publications
-		publications = client._request("GET", "/v1/users/" + user["id"] + "/publications")
-		print(publications)
+        # Get publications
+        publications = client._request("GET", "/v1/users/" + user["id"] + "/publications")
+        print(publications)
 
 
 # # Create a draft post.
