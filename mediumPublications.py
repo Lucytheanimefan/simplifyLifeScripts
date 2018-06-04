@@ -16,10 +16,19 @@ ua = UserAgent()
 
 PRIVATE_API_URL = "https://medium.com/_/api"
 
+def post_url(post_id):
+    return PRIVATE_API_URL + "/posts/" + post_id + "/"
+
+def post_responses_url(post_id, filter_args="best"):
+    return post_url(post_id) + "responses?filter=" + filter_args
+
 def remove_prefix(text, prefix):
     if text.startswith(prefix):
         return text[len(prefix):]
     return text  # or whatever
+
+def fix_medium_json_response(data):
+    return remove_prefix(data, "])}while(1);</x>")
 
 def medium_featured_articles(soup):
     articles = []
@@ -43,8 +52,26 @@ def get_home_articles():
 
     try:
         r = requests.get(PRIVATE_API_URL + "/home-feed", headers = header)
-        data = json.loads(remove_prefix(r.text, "])}while(1);</x>"))
-        print(data)
+        data = json.loads(fix_medium_json_response(r.text))
+        stream_items = data["payload"]["streamItems"]
+        for post in stream_items:
+            # print(post)
+            # print("Continue (y/n)")
+            # should_continue = sys.stdin.readline().strip()
+            # if should_continue == "n":
+            #     continue
+            item_type = post["itemType"]
+            if item_type == "extremePostPreview":
+                post_preview = post["extremePostPreview"]
+                post_id = post_preview["postId"]
+                print(post_url(post_id))
+            elif item_type == "extremeAdaptiveSection":
+                items = post["items"]
+                for item in items:
+                    item_post = item["post"]
+                    post_id = item_post["postId"]
+                    print("----extremeAdaptiveSection!!!!")
+                    print(post_url(post_id))
     except requests.exceptions.ConnectionError:
         print("Connection refused")
     
@@ -52,7 +79,7 @@ def get_home_articles():
 
 
 if __name__ == '__main__':
-    do_auth = False
+    do_auth = True
 
     get_home_articles()
 
@@ -84,6 +111,7 @@ if __name__ == '__main__':
 
         # Get profile details of the user identified by the access token.
         user = client.get_current_user()
+        print(user)
 
         # Get publications
         publications = client._request("GET", "/v1/users/" + user["id"] + "/publications")
