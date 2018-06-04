@@ -20,3 +20,10 @@ Just create some files and folders that I always use for (deadfisheyed.herokuapp
 
 ## specific_anime.py
 Inserting anime into my db to make hipchat extension for anime notifications to work group. 
+
+## sendMessage.applescript
+Send an iMessage with a text message and/or a file attachment to a person with phone number.
+
+Example:
+
+`osascript sendMessage.applescript 9848888888 "test image and text" "/Users/billyu/Desktop/violet/violet.PNG"`
