@@ -3,49 +3,63 @@ from config import *
 import webbrowser
 import sys
 import requests
-
-def get_publications(userid, token):
-
-	r = requests.get("https://api.medium.com/v1/users/" + userid + "/publications?access_token=" + token)
-	json = r.json()
-	print(json)
-
+from bs4 import BeautifulSoup
+import requests
 
 callback_url = "https://lucys-anime-server.herokuapp.com"
-# Go to http://medium.com/me/applications to get your application_id and application_secret.
-client = Client(application_id=MEDIUM_CLIENT_ID, application_secret=MEDIUM_CLIENT_SECRET)
 
-# Build the URL where you can send the user to obtain an authorization code.
-auth_url = client.get_authorization_url("secretstate", callback_url,
-                                        ["basicProfile", "publishPost", "listPublications"])
+# Get articles from home page
+def get_home_articles():
+	r = requests.get("https://medium.com")
+	data = r.text
+	soup = BeautifulSoup(data,  "html.parser")
 
-# (Send the user to the authorization URL to obtain an authorization code.)
-print(auth_url)
+	# Featured articles
+	posts = soup.find_all("div",{"class": "extremeHero-postContent"})
+	links = soup.find_all("a", {"class":"ds-link"})
+	for post in posts:
+		title = post.find("div", {"class":"extremeHero-titleClamp"})
+		byline = post.find("div", {"class":"extremeHero-byline"})
+		print(title.text, byline.text)
 
-webbrowser.open(auth_url, new=2)
 
-print("Authorization code:")
-authorization_code = sys.stdin.readline().strip()
+if __name__ == '__main__':
+	do_auth = False
 
-# Exchange the authorization code for an access token.
-auth = client.exchange_authorization_code(authorization_code,
-                                          callback_url)
+	get_home_articles()
 
-# The access token is automatically set on the client for you after
-# a successful exchange, but if you already have a token, you can set it
-# directly.
-client.access_token = auth["access_token"]
+	if do_auth:
 
-# Get profile details of the user identified by the access token.
-user = client.get_current_user()
+		# Go to http://medium.com/me/applications to get your application_id and application_secret.
+		client = Client(application_id=MEDIUM_CLIENT_ID, application_secret=MEDIUM_CLIENT_SECRET)
 
-print(user)
+		# Build the URL where you can send the user to obtain an authorization code.
+		auth_url = client.get_authorization_url("secretstate", callback_url,
+		                                        ["basicProfile", "publishPost", "listPublications"])
 
-print(user["id"])
+		# (Send the user to the authorization URL to obtain an authorization code.)
+		print(auth_url)
 
-# Get publications
-publications = client._request("GET", "/v1/users/" + user["id"] + "/publications")
-print(publications)
+		webbrowser.open(auth_url, new=2)
+
+		print("Authorization code (at the end of the url that was just opened):")
+		authorization_code = sys.stdin.readline().strip()
+
+		# Exchange the authorization code for an access token.
+		auth = client.exchange_authorization_code(authorization_code,
+		                                          callback_url)
+
+		# The access token is automatically set on the client for you after
+		# a successful exchange, but if you already have a token, you can set it
+		# directly.
+		client.access_token = auth["access_token"]
+
+		# Get profile details of the user identified by the access token.
+		user = client.get_current_user()
+
+		# Get publications
+		publications = client._request("GET", "/v1/users/" + user["id"] + "/publications")
+		print(publications)
 
 # # Create a draft post.
 # post = client.create_post(user_id=user["id"], title="Title", content="<h2>Title</h2><p>Content</p>",
