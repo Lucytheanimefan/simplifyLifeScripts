@@ -4,27 +4,45 @@ import webbrowser
 import sys
 import requests
 from bs4 import BeautifulSoup
+from fake_useragent import UserAgent
 import requests
 
 callback_url = "https://lucys-anime-server.herokuapp.com"
 
-# Get articles from home page
-def get_home_articles():
-	r = requests.get("https://medium.com")
-	data = r.text
-	soup = BeautifulSoup(data,  "html.parser")
+ua = UserAgent()
 
-	# Featured articles
+def medium_featured_articles(soup):
+	articles = []
+	# Medium featured articles
 	posts = soup.find_all("div",{"class": "extremeHero-postContent"})
-	links = soup.find_all("a", {"class":"ds-link"})
 	for post in posts:
 		title = post.find("div", {"class":"extremeHero-titleClamp"})
 		byline = post.find("div", {"class":"extremeHero-byline"})
 		print(title.text, byline.text)
+		articles.append((title.text, byline.text))
+	return articles
+
+# def medium_custom_recommended_articles(soup):
+# 	links = soup.find_all("a", {"class":"ds-link"})
+# 	for link in links:
+# 		print(link.text)
+
+# Get articles from home page
+def get_home_articles():
+	header = {'User-Agent':str(ua.chrome)}
+	r = requests.get("https://medium.com", headers = header)
+	data = r.text
+	soup = BeautifulSoup(data,  "html.parser")
+
+	# Medium featured articles
+	featured = medium_featured_articles(soup)
+
+	# Medium's custom recommended articles to you
+	# custom = medium_custom_recommended_articles(soup)
 
 
 if __name__ == '__main__':
-	do_auth = False
+	do_auth = True
 
 	get_home_articles()
 
@@ -60,6 +78,7 @@ if __name__ == '__main__':
 		# Get publications
 		publications = client._request("GET", "/v1/users/" + user["id"] + "/publications")
 		print(publications)
+
 
 # # Create a draft post.
 # post = client.create_post(user_id=user["id"], title="Title", content="<h2>Title</h2><p>Content</p>",
