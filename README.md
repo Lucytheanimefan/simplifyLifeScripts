@@ -38,3 +38,12 @@ setup:
 3. Edit the daily message && correct the script and image paths if necessary.
 4. `sudo launchctl load /Library/LaunchDaemons/com.billyu.botherlucy.plist`
 5. Start bothering Lucy on a daily basis.
+
+## newNpm.sh
+
+Initializes an npm project with configured settings.
+
+usage:
+
+1. cd into this project's directory
+2. sh ./newNpm.sh {absolute directory of the new project}
