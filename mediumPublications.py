@@ -30,11 +30,16 @@ def fix_medium_json_response(data):
     return remove_prefix(data, "])}while(1);</x>")
 
 # Get articles from home page
-def get_home_articles():
-    header = {'User-Agent':str(ua.random)}
-
+def get_home_articles(access_token):
+    headers = {
+        "Accept": "application/json",
+        "Accept-Charset": "utf-8",
+        "Authorization": "Bearer %s" % access_token,
+        'User-Agent':str(ua.random),
+        "x-xsrf-token": access_token
+    }
     try:
-        r = requests.get(PRIVATE_API_URL + "/home-feed", headers = header)
+        r = requests.get(PRIVATE_API_URL + "/home-feed", headers = headers)
         data = json.loads(fix_medium_json_response(r.text))
         stream_items = data["payload"]["streamItems"]
         for post in stream_items:
@@ -64,8 +69,6 @@ def get_home_articles():
 if __name__ == '__main__':
     do_auth = True
 
-    get_home_articles()
-
     if do_auth:
 
         # Go to http://medium.com/me/applications to get your application_id and application_secret.
@@ -94,11 +97,13 @@ if __name__ == '__main__':
 
         # Get profile details of the user identified by the access token.
         user = client.get_current_user()
-        print(user)
+        # print(user)
 
         # Get publications
-        publications = client._request("GET", "/v1/users/" + user["id"] + "/publications")
-        print(publications)
+        # publications = client._request("GET", "/v1/users/" + user["id"] + "/publications")
+        # print(publications)
+
+        get_home_articles(client.access_token)
 
 
 # # Create a draft post.
