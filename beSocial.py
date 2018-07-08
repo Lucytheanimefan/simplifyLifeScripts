@@ -76,17 +76,17 @@ def update_family():
 
 if __name__ == '__main__':
 	sent_to = []
-	print "Message by notes? (y/n)"
+	print("Message by notes? (y/n)")
 	answer = sys.stdin.readline().strip()
 	if answer=="y":
-		print "What preprogrammed tag? (anime, family, deadfisheyed, cool)"
+		print("What preprogrammed tag? (anime, family, deadfisheyed, cool)")
 		tags = sys.stdin.readline().strip().split(",")
 		names = None
 	else:
-		print "Who do you want to bother (names separated by commas)?"
+		print("Who do you want to bother (names separated by commas)?")
 		names = sys.stdin.readline().strip().split(",")
 		tags = None
-	print "Message?"
+	print("Message?")
 	message = sys.stdin.readline() + "\n(Sent from Lucy's awesome script)"
 	people = address_book_to_list()
 	for person in people:
