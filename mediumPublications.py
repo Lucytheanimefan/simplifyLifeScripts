@@ -8,6 +8,7 @@ from fake_useragent import UserAgent
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+import settings
 
 callback_url = "https://lucys-anime-server.herokuapp.com"
 
@@ -35,8 +36,9 @@ def get_home_articles(access_token):
         "Accept": "application/json",
         "Accept-Charset": "utf-8",
         "Authorization": "Bearer %s" % access_token,
-        'User-Agent':str(ua.random),
-        "x-xsrf-token": access_token
+        "User-Agent":str(ua.random),
+        "x-xsrf-token": access_token,
+        "cookie": settings.COOKIE
     }
     try:
         r = requests.get(PRIVATE_API_URL + "/home-feed", headers = headers)
@@ -54,12 +56,13 @@ def get_home_articles(access_token):
                 post_id = post_preview["postId"]
                 print(post_url(post_id))
             elif item_type == "extremeAdaptiveSection":
-                items = post["items"]
-                for item in items:
-                    item_post = item["post"]
-                    post_id = item_post["postId"]
-                    print("----extremeAdaptiveSection!!!!")
-                    print(post_url(post_id))
+                if "items" in post:
+                    items = post["items"]
+                    for item in items:
+                        item_post = item["post"]
+                        post_id = item_post["postId"]
+                        print("----extremeAdaptiveSection!!!!")
+                        print(post_url(post_id))
     except requests.exceptions.ConnectionError:
         print("Connection refused")
     
