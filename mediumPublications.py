@@ -1,5 +1,4 @@
 from medium import Client
-from config import *
 import webbrowser
 import sys
 import json
@@ -8,7 +7,7 @@ from fake_useragent import UserAgent
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-import settings
+from settings import *
 
 callback_url = "https://lucys-anime-server.herokuapp.com"
 
@@ -38,7 +37,7 @@ def get_home_articles(access_token):
         "Authorization": "Bearer %s" % access_token,
         "User-Agent":str(ua.random),
         "x-xsrf-token": access_token,
-        "cookie": settings.COOKIE
+        "cookie": COOKIE
     }
     try:
         r = requests.get(PRIVATE_API_URL + "/home-feed", headers = headers)

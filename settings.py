@@ -11,3 +11,5 @@ load_dotenv(dotenv_path=env_path)
 
 import os
 COOKIE = os.getenv("COOKIE")
+MEDIUM_CLIENT_SECRET = os.getenv("MEDIUM_CLIENT_SECRET")
+MEDIUM_CLIENT_ID = os.getenv("MEDIUM_CLIENT_ID")

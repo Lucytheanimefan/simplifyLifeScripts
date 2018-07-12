@@ -47,3 +47,10 @@ usage:
 
 1. cd into this project's directory
 2. sh ./newNpm.sh {absolute directory of the new project}
+
+## mediumPublications.py
+Alternative interface to the limited existing medium API. Can pull custom Medium recommended articles from home feed. 
+
+### Setup
+1. Created a .env file in the same directory as the script. In the file, set your COOKIE variable, which you can get from the dev tools in chrome in the Network tab. Also set MEDIUM_CLIENT_ID and MEDIUM_CLIENT_SECRET. 
+2. Make sure you have the following python modules installed: dotenv, medium.
