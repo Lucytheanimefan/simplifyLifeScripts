@@ -26,6 +26,9 @@ def post_responses_url(post_id, filter_args="best"):
 def topic_subscription_url(topic):
     return ME_URL + "/subscriptions/topic/%s" % topic
 
+def collection_subscription_url(publication):
+    return ME_URL + "/subscriptions/collection/%s" % publication
+
 def remove_prefix(text, prefix):
     if text.startswith(prefix):
         return text[len(prefix):]
@@ -34,8 +37,19 @@ def remove_prefix(text, prefix):
 def fix_medium_json_response(data):
     return remove_prefix(data, "])}while(1);</x>")
 
-def subscribe_to_topic(access_token, topic):
-    url = topic_subscription_url(topic)
+def subscribe(access_token, topic=None, publication=None):
+    url = None
+    if topic is None:
+        topic = publication.replace(" ", "-")
+        url = collection_subscription_url(topic)
+    elif publication is None:
+        topic = topic.replace(" ", "-")
+        url = topic_subscription_url(topic)
+    else:
+        print("Both topic and publication can't both be none")
+        return
+    print(url)
+
     headers = {
         "Accept": "application/json",
         "Accept-Charset": "utf-8",
@@ -125,7 +139,7 @@ if __name__ == '__main__':
 
         # get_home_articles(client.access_token)
         
-        subscribe_to_topic(client.access_token, "software-engineering")
+        subscribe(client.access_token, publication="greylock perspectives")
 
 
 # # Create a draft post.
