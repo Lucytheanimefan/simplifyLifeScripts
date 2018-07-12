@@ -15,11 +15,16 @@ ua = UserAgent()
 
 PRIVATE_API_URL = "https://medium.com/_/api"
 
+ME_URL = "https://medium.com/me"
+
 def post_url(post_id):
     return PRIVATE_API_URL + "/posts/" + post_id + "/"
 
 def post_responses_url(post_id, filter_args="best"):
     return post_url(post_id) + "responses?filter=" + filter_args
+
+def topic_subscription_url(topic):
+    return ME_URL + "/subscriptions/topic/%s" % topic
 
 def remove_prefix(text, prefix):
     if text.startswith(prefix):
@@ -28,6 +33,19 @@ def remove_prefix(text, prefix):
 
 def fix_medium_json_response(data):
     return remove_prefix(data, "])}while(1);</x>")
+
+def subscribe_to_topic(access_token, topic):
+    url = topic_subscription_url(topic)
+    headers = {
+        "Accept": "application/json",
+        "Accept-Charset": "utf-8",
+        "Authorization": "Bearer %s" % access_token,
+        "User-Agent":str(ua.random),
+        "x-xsrf-token": access_token,
+        "cookie": COOKIE
+    }
+    r = requests.put(url, headers = headers)
+    print(r.text)
 
 # Get articles from home page
 def get_home_articles(access_token):
@@ -98,14 +116,16 @@ if __name__ == '__main__':
         client.access_token = auth["access_token"]
 
         # Get profile details of the user identified by the access token.
-        user = client.get_current_user()
+        # user = client.get_current_user()
         # print(user)
 
         # Get publications
         # publications = client._request("GET", "/v1/users/" + user["id"] + "/publications")
         # print(publications)
 
-        get_home_articles(client.access_token)
+        # get_home_articles(client.access_token)
+        
+        subscribe_to_topic(client.access_token, "software-engineering")
 
 
 # # Create a draft post.
