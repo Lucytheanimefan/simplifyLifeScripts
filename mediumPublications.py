@@ -29,6 +29,9 @@ def topic_subscription_url(topic):
 def collection_subscription_url(publication):
     return ME_URL + "/subscriptions/collection/%s" % publication
 
+def activity_url():
+    return ME_URL + "/activity"
+
 def remove_prefix(text, prefix):
     if text.startswith(prefix):
         return text[len(prefix):]
@@ -36,6 +39,21 @@ def remove_prefix(text, prefix):
 
 def fix_medium_json_response(data):
     return remove_prefix(data, "])}while(1);</x>")
+
+def get_activity(access_token):
+    headers = {
+        "Accept": "application/json",
+        "Accept-Charset": "utf-8",
+        "Authorization": "Bearer %s" % access_token,
+        "User-Agent":str(ua.random),
+        "x-xsrf-token": access_token,
+        "cookie": COOKIE,
+        "content-type": "application/json"
+    }
+    url = activity_url()
+    r = requests.get(url, headers = headers)
+    data = json.loads(fix_medium_json_response(r.text))
+    return data
 
 def subscribe(access_token, topic=None, publication=None):
     url = None
@@ -139,7 +157,9 @@ if __name__ == '__main__':
 
         # get_home_articles(client.access_token)
         
-        subscribe(client.access_token, publication="greylock perspectives")
+        # subscribe(client.access_token, publication="greylock perspectives")
+
+        print(get_activity(client.access_token))
 
 
 # # Create a draft post.
